@@ -27,6 +27,12 @@ import {
 import { addIcons } from 'ionicons';
 import { moonOutline, sunnyOutline } from 'ionicons/icons';
 
+interface RegistroEnviado {
+  nombre: string;
+  email: string;
+  fechaNacimiento: string;
+}
+
 function obtenerHoy(): string {
   const fecha = new Date();
   const anio = fecha.getFullYear();
@@ -81,7 +87,10 @@ export class HomePage {
       'ion-palette-dark',
       this.modoOscuro()
     );
+
+
   }
+  public ultimoEnvio = signal<RegistroEnviado | null>(null);
 
   constructor(
     private fb: FormBuilder,
@@ -102,6 +111,7 @@ export class HomePage {
     });
   }
   public async onSubmit(): Promise<void> {
+
     if (this.isSubmitting()) {
       return;
     }
@@ -120,6 +130,11 @@ export class HomePage {
       await new Promise<void>((resolve) => {
         setTimeout(resolve, 2000);
       });
+      this.ultimoEnvio.set({
+        nombre: formData.nombre,
+        email: formData.email,
+        fechaNacimiento: String(formData.fechaNacimiento).slice(0, 10)
+      });
 
       const alert = await this.alertController.create({
         header: 'Formulario enviado',
@@ -134,6 +149,62 @@ export class HomePage {
       console.error('Error durante el envío simulado:', error);
     } finally {
       this.isSubmitting.set(false);
+    }
+  }
+  public async descargarPdf(): Promise<void> {
+    const datos = this.ultimoEnvio();
+
+    if (!datos) {
+      return;
+    }
+
+    try {
+      const { jsPDF } = await import('jspdf');
+      const documento = new jsPDF();
+
+      const [anio, mes, dia] = datos.fechaNacimiento.split('-');
+
+      documento.setFontSize(18);
+      documento.text('Justificante del formulario', 20, 25);
+
+      documento.setFontSize(12);
+
+      const contenido = [
+        `Nombre: ${datos.nombre}`,
+        `Correo electrónico: ${datos.email}`,
+        `Fecha de nacimiento: ${dia}/${mes}/${anio}`,
+        'Contraseña: Oculta'
+      ];
+
+      let posicionY = 45;
+
+      for (const campo of contenido) {
+        const lineas: string[] = documento.splitTextToSize(campo, 170);
+
+        for (const linea of lineas) {
+          if (posicionY > 275) {
+            documento.addPage();
+            posicionY = 20;
+          }
+
+          documento.text(linea, 20, posicionY);
+          posicionY += 7;
+        }
+
+        posicionY += 5;
+      }
+
+      documento.save('registro-enviado.pdf');
+    } catch (error) {
+      console.error('Error al generar el PDF:', error);
+
+      const alerta = await this.alertController.create({
+        header: 'No se pudo generar el PDF',
+        message: 'Inténtalo de nuevo.',
+        buttons: ['Aceptar']
+      });
+
+      await alerta.present();
     }
   }
 }

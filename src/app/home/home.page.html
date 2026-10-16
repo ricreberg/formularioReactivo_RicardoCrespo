@@ -3,15 +3,9 @@
     <ion-title>Registro de usuario</ion-title>
 
     <ion-buttons slot="end">
-      <ion-button
-        type="button"
-        [attr.aria-label]="modoOscuro() ? 'Activar modo claro' : 'Activar modo oscuro'"
-        [attr.aria-pressed]="modoOscuro()"
-        (click)="cambiarModoOscuro()">
-        <ion-icon
-          slot="icon-only"
-          [name]="modoOscuro() ? 'sunny-outline' : 'moon-outline'"
-          aria-hidden="true">
+      <ion-button type="button" [attr.aria-label]="modoOscuro() ? 'Activar modo claro' : 'Activar modo oscuro'"
+        [attr.aria-pressed]="modoOscuro()" (click)="cambiarModoOscuro()">
+        <ion-icon slot="icon-only" [name]="modoOscuro() ? 'sunny-outline' : 'moon-outline'" aria-hidden="true">
         </ion-icon>
       </ion-button>
     </ion-buttons>
@@ -81,4 +75,8 @@
       </ion-button>
     </div>
   </form>
+  <ion-button expand="block" fill="outline" type="button" [disabled]="!ultimoEnvio() || isSubmitting()"
+    (click)="descargarPdf()">
+    Descargar último envío en PDF
+  </ion-button>
 </ion-content>
