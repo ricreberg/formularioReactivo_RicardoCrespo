@@ -11,4 +11,8 @@ export const routes: Routes = [
     redirectTo: 'registro',
     pathMatch: 'full',
   },
+  {
+    path: 'driven',
+    loadComponent: () => import('./driven/driven.page').then( m => m.DrivenPage)
+  },
 ];

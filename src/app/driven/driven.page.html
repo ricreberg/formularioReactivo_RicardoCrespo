@@ -1,0 +1,71 @@
+<ion-header>
+  <ion-toolbar color="primary">
+    <ion-title>Registro con Template-Driven</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content class="ion-padding">
+  <form #formulario="ngForm" (ngSubmit)="onSubmit(formulario)">
+    <ion-list lines="full">
+      <ion-item>
+        <ion-input label="Nombre completo" labelPlacement="floating" type="text" name="nombre"
+          [(ngModel)]="usuario.nombre" required minlength="3" errorText="El nombre es obligatorio (mín. 3 caracteres).">
+        </ion-input>
+      </ion-item>
+
+      <ion-item>
+        <ion-input label="Correo electrónico" labelPlacement="floating" type="email" inputmode="email" name="email"
+          [(ngModel)]="usuario.email" required email errorText="Introduzca un email válido.">
+        </ion-input>
+      </ion-item>
+
+      <ion-item>
+        <ion-input label="Contraseña" labelPlacement="floating" type="password" name="password"
+          [(ngModel)]="usuario.password" required pattern="^(?=.*[A-Za-z])(?=.*[0-9])[A-Za-z0-9]{8,}$"
+          errorText="Mínimo 8 caracteres, solo letras y números, con al menos uno de cada.">
+        </ion-input>
+      </ion-item>
+
+      <ion-item>
+        <span id="driven-fecha-label">Fecha de nacimiento</span>
+
+        <ion-datetime-button slot="end" datetime="driven-fecha">
+        </ion-datetime-button>
+      </ion-item>
+      @if (formulario.controls['fechaNacimiento']; as fecha) {
+      @if (fecha.touched) {
+      @if (fecha.hasError('required')) {
+      <p class="ion-padding-horizontal" role="alert">
+        Selecciona tu fecha de nacimiento.
+      </p>
+      }
+
+      @if (fecha.hasError('fechaFutura')) {
+      <p class="ion-padding-horizontal" role="alert">
+        La fecha de nacimiento no puede ser posterior a hoy.
+      </p>
+      }
+      }
+      }
+    </ion-list>
+
+    <ion-modal [keepContentsMounted]="true">
+      <ng-template>
+        <ion-datetime id="driven-fecha" aria-labelledby="driven-fecha-label" presentation="date" locale="es-ES"
+          name="fechaNacimiento" [(ngModel)]="usuario.fechaNacimiento" required appFechaNoFutura [max]="hoy"
+          [showDefaultButtons]="true" doneText="Confirmar" cancelText="Cancelar">
+        </ion-datetime>
+      </ng-template>
+    </ion-modal>
+    <div class="ion-padding-top">
+      <ion-button expand="block" type="submit" [disabled]="formulario.invalid || isSubmitting()">
+
+        @if (isSubmitting()) {
+        <ion-spinner name="crescent"></ion-spinner>
+        } @else {
+        <span>Registrarse</span>
+        }
+      </ion-button>
+    </div>
+  </form>
+</ion-content>
