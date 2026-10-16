@@ -139,7 +139,19 @@ export class HomePage {
       const alert = await this.alertController.create({
         header: 'Formulario enviado',
         message: 'El formulario se ha enviado correctamente.',
-        buttons: ['Aceptar']
+        buttons: [
+          {
+            text: 'Descargar PDF',
+            handler: () => {
+              void this.descargarPdf();
+              return false;
+            }
+          },
+          {
+            text: 'Aceptar',
+            role: 'cancel'
+          }
+        ]
       });
 
       await alert.present();
