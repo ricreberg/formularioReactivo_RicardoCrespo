@@ -29,6 +29,9 @@ import { ReactiveFormsModule, FormBuilder, FormGroup, Validators } from '@angula
     IonItem,
     IonButton,
     IonSpinner,
+    IonDatetime,
+    IonDatetimeButton,
+    IonModal,
     ReactiveFormsModule
   ],
 })
@@ -47,7 +50,7 @@ export class HomePage {
           Validators.pattern(/^(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d]{8,}$/)
         ]
       ],
-      fechaNacimiento: ['', Validators.required],
+      fechaNacimiento: [null, Validators.required],
     });
   }
   public async onSubmit(): Promise<void> {
