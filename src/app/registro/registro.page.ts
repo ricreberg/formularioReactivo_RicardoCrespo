@@ -53,9 +53,9 @@ function fechaNoFutura(control: AbstractControl): ValidationErrors | null {
 }
 
 @Component({
-  selector: 'app-home',
-  templateUrl: 'home.page.html',
-  styleUrls: ['home.page.scss'],
+  selector: 'app-registro',
+  templateUrl: 'registro.page.html',
+  styleUrls: ['registro.page.scss'],
   imports: [
     IonHeader,
     IonToolbar,
@@ -74,7 +74,7 @@ function fechaNoFutura(control: AbstractControl): ValidationErrors | null {
     IonIcon
   ],
 })
-export class HomePage {
+export class RegistroPage {
   public registroForm: FormGroup;
   public isSubmitting = signal(false);
   public hoy = obtenerHoy();
