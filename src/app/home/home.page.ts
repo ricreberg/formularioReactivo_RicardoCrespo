@@ -14,7 +14,33 @@ import {
   IonModal,
   AlertController
 } from '@ionic/angular';
-import { ReactiveFormsModule, FormBuilder, FormGroup, Validators } from '@angular/forms';
+import {
+  ReactiveFormsModule,
+  FormBuilder,
+  FormGroup,
+  Validators,
+  AbstractControl,
+  ValidationErrors
+} from '@angular/forms';
+
+function obtenerHoy(): string {
+  const fecha = new Date();
+  const anio = fecha.getFullYear();
+  const mes = String(fecha.getMonth() + 1).padStart(2, '0');
+  const dia = String(fecha.getDate()).padStart(2, '0');
+
+  return `${anio}-${mes}-${dia}`;
+}
+
+function fechaNoFutura(control: AbstractControl): ValidationErrors | null {
+  if (!control.value) {
+    return null;
+  }
+
+  const fecha = String(control.value).slice(0, 10);
+
+  return fecha > obtenerHoy() ? { fechaFutura: true } : null;
+}
 
 @Component({
   selector: 'app-home',
@@ -39,6 +65,7 @@ import { ReactiveFormsModule, FormBuilder, FormGroup, Validators } from '@angula
 export class HomePage {
   public registroForm: FormGroup;
   public isSubmitting = signal(false);
+  public hoy = obtenerHoy();
 
   constructor(
     private fb: FormBuilder,
@@ -54,7 +81,7 @@ export class HomePage {
           Validators.pattern(/^(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d]{8,}$/)
         ]
       ],
-      fechaNacimiento: [null, Validators.required],
+      fechaNacimiento: [null, [Validators.required, fechaNoFutura]],
     });
   }
   public async onSubmit(): Promise<void> {
