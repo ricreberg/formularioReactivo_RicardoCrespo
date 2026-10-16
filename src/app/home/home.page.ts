@@ -11,7 +11,8 @@ import {
   IonSpinner,
   IonDatetime,
   IonDatetimeButton,
-  IonModal
+  IonModal,
+  AlertController
 } from '@ionic/angular';
 import { ReactiveFormsModule, FormBuilder, FormGroup, Validators } from '@angular/forms';
 
@@ -39,7 +40,10 @@ export class HomePage {
   public registroForm: FormGroup;
   public isSubmitting = signal(false);
 
-  constructor(private fb: FormBuilder) {
+  constructor(
+    private fb: FormBuilder,
+    private alertController: AlertController
+  ) {
     this.registroForm = this.fb.group({
       nombre: ['', [Validators.required, Validators.minLength(3)]],
       email: ['', [Validators.required, Validators.email]],
@@ -72,6 +76,14 @@ export class HomePage {
       await new Promise<void>((resolve) => {
         setTimeout(resolve, 2000);
       });
+
+      const alert = await this.alertController.create({
+        header: 'Formulario enviado',
+        message: 'El formulario se ha enviado correctamente.',
+        buttons: ['Aceptar']
+      });
+
+      await alert.present();
 
       this.registroForm.reset();
     } catch (error) {
