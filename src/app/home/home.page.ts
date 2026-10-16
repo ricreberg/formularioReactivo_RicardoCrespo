@@ -8,7 +8,10 @@ import {
   IonList,
   IonItem,
   IonButton,
-  IonSpinner
+  IonSpinner,
+  IonDatetime,
+  IonDatetimeButton,
+  IonModal
 } from '@ionic/angular';
 import { ReactiveFormsModule, FormBuilder, FormGroup, Validators } from '@angular/forms';
 
@@ -43,7 +46,8 @@ export class HomePage {
           Validators.required,
           Validators.pattern(/^(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d]{8,}$/)
         ]
-      ]
+      ],
+      fechaNacimiento: ['', Validators.required],
     });
   }
   public async onSubmit(): Promise<void> {

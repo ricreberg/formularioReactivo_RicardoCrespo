@@ -8,47 +8,46 @@
   <form [formGroup]="registroForm" (ngSubmit)="onSubmit()">
     <ion-list lines="full">
       <ion-item>
-        <ion-input
-          label="Nombre completo"
-          labelPlacement="floating"
-          type="text"
-          formControlName="nombre"
+        <ion-input label="Nombre completo" labelPlacement="floating" type="text" formControlName="nombre"
           errorText="El nombre es obligatorio (mín. 3 caracteres).">
         </ion-input>
       </ion-item>
 
       <ion-item>
-        <ion-input
-          label="Correo electrónico"
-          labelPlacement="floating"
-          type="email"
-          inputmode="email"
-          formControlName="email"
-          errorText="Introduzca un email válido.">
+        <ion-input label="Correo electrónico" labelPlacement="floating" type="email" inputmode="email"
+          formControlName="email" errorText="Introduzca un email válido.">
         </ion-input>
       </ion-item>
 
       <ion-item>
-        <ion-input
-          label="Contraseña"
-          labelPlacement="floating"
-          type="password"
-          formControlName="password"
+        <ion-input label="Contraseña" labelPlacement="floating" type="password" formControlName="password"
           errorText="Mínimo 8 caracteres, solo letras y números, con al menos uno de cada.">
         </ion-input>
       </ion-item>
+      ç<ion-item>
+        <span id="fecha-nacimiento-label">Fecha de nacimiento *</span>
+
+        <ion-datetime-button slot="end" datetime="fecha-nacimiento">
+        </ion-datetime-button>
+      </ion-item>
+
+      <ion-modal [keepContentsMounted]="true">
+        <ng-template>
+          <ion-datetime id="fecha-nacimiento" aria-labelledby="fecha-nacimiento-label" presentation="date"
+            locale="es-ES" formControlName="fechaNacimiento" [showDefaultButtons]="true" doneText="Confirmar"
+            cancelText="Cancelar">
+          </ion-datetime>
+        </ng-template>
+      </ion-modal>
     </ion-list>
 
     <div class="ion-padding-top">
-      <ion-button
-        expand="block"
-        type="submit"
-        [disabled]="registroForm.invalid || isSubmitting()">
+      <ion-button expand="block" type="submit" [disabled]="registroForm.invalid || isSubmitting()">
 
         @if (isSubmitting()) {
-          <ion-spinner name="crescent"></ion-spinner>
+        <ion-spinner name="crescent"></ion-spinner>
         } @else {
-          <span>Registrarse</span>
+        <span>Registrarse</span>
         }
       </ion-button>
     </div>
