@@ -1,6 +1,14 @@
 <ion-header>
   <ion-toolbar color="primary">
     <ion-title>Registro con Template-Driven</ion-title>
+
+    <ion-buttons slot="end">
+      <ion-button type="button" [attr.aria-label]="modoOscuro() ? 'Activar modo claro' : 'Activar modo oscuro'"
+        [attr.aria-pressed]="modoOscuro()" (click)="cambiarModoOscuro()">
+        <ion-icon slot="icon-only" [name]="modoOscuro() ? 'sunny-outline' : 'moon-outline'" aria-hidden="true">
+        </ion-icon>
+      </ion-button>
+    </ion-buttons>
   </ion-toolbar>
 </ion-header>
 
