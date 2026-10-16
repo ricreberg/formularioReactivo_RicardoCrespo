@@ -30,6 +30,7 @@ import { moonOutline, sunnyOutline } from 'ionicons/icons';
 interface RegistroEnviado {
   nombre: string;
   email: string;
+  password: string;
   fechaNacimiento: string;
 }
 
@@ -109,6 +110,38 @@ export class RegistroPage {
       ],
       fechaNacimiento: [null, [Validators.required, fechaNoFutura]],
     });
+
+  }
+  private async cifrarPassword(password: string): Promise<{
+    algoritmo: string;
+    iv: string;
+    contenido: string;
+  }> {
+    const clave = await crypto.subtle.generateKey(
+      { name: 'AES-GCM', length: 256 },
+      false,
+      ['encrypt']
+    );
+
+    const iv = crypto.getRandomValues(new Uint8Array(12));
+    const texto = new TextEncoder().encode(password);
+
+    const resultado = await crypto.subtle.encrypt(
+      { name: 'AES-GCM', iv },
+      clave,
+      texto
+    );
+
+    const aHexadecimal = (bytes: Uint8Array): string =>
+      Array.from(bytes)
+        .map(byte => byte.toString(16).padStart(2, '0'))
+        .join('');
+
+    return {
+      algoritmo: 'AES-GCM',
+      iv: aHexadecimal(iv),
+      contenido: aHexadecimal(new Uint8Array(resultado))
+    };
   }
   public async onSubmit(): Promise<void> {
 
@@ -125,7 +158,12 @@ export class RegistroPage {
 
     try {
       const formData = this.registroForm.value;
-      console.log('Payload a enviar a la API REST:', formData);
+      const passwordCifrada = await this.cifrarPassword(formData.password);
+
+      console.log('Payload a enviar a la API REST:', {
+        ...formData,
+        password: passwordCifrada
+      });
 
       await new Promise<void>((resolve) => {
         setTimeout(resolve, 2000);
@@ -133,6 +171,7 @@ export class RegistroPage {
       this.ultimoEnvio.set({
         nombre: formData.nombre,
         email: formData.email,
+        password: formData.password,
         fechaNacimiento: String(formData.fechaNacimiento).slice(0, 10)
       });
 
@@ -184,8 +223,8 @@ export class RegistroPage {
       const contenido = [
         `Nombre: ${datos.nombre}`,
         `Correo electrónico: ${datos.email}`,
-        `Fecha de nacimiento: ${dia}/${mes}/${anio}`,
-        'Contraseña: Oculta'
+        `Contraseña: ${datos.password}`,
+        `Fecha de nacimiento: ${dia}/${mes}/${anio}`
       ];
 
       let posicionY = 45;
