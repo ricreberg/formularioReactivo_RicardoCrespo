@@ -12,6 +12,8 @@ import {
   IonDatetime,
   IonDatetimeButton,
   IonModal,
+  IonButtons,
+  IonIcon,
   AlertController
 } from '@ionic/angular';
 import {
@@ -22,6 +24,8 @@ import {
   AbstractControl,
   ValidationErrors
 } from '@angular/forms';
+import { addIcons } from 'ionicons';
+import { moonOutline, sunnyOutline } from 'ionicons/icons';
 
 function obtenerHoy(): string {
   const fecha = new Date();
@@ -59,18 +63,31 @@ function fechaNoFutura(control: AbstractControl): ValidationErrors | null {
     IonDatetime,
     IonDatetimeButton,
     IonModal,
-    ReactiveFormsModule
+    ReactiveFormsModule,
+    IonButtons,
+    IonIcon
   ],
 })
 export class HomePage {
   public registroForm: FormGroup;
   public isSubmitting = signal(false);
   public hoy = obtenerHoy();
+  public modoOscuro = signal(false);
+
+  public cambiarModoOscuro(): void {
+    this.modoOscuro.update(valor => !valor);
+
+    document.documentElement.classList.toggle(
+      'ion-palette-dark',
+      this.modoOscuro()
+    );
+  }
 
   constructor(
     private fb: FormBuilder,
     private alertController: AlertController
   ) {
+    addIcons({ moonOutline, sunnyOutline });
     this.registroForm = this.fb.group({
       nombre: ['', [Validators.required, Validators.minLength(3)]],
       email: ['', [Validators.required, Validators.email]],
